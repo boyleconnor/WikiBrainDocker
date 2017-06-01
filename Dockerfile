@@ -33,7 +33,7 @@ FROM ubuntu
   # Define working directory.
   WORKDIR /wikibrain
 
-  ADD pom.xml
+  ADD pom.xml /wikibrain/pom.xml
   RUN ["mvn", "dependency:resolve"]
   RUN ["mvn", "verify"]
 
