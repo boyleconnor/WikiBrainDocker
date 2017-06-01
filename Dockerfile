@@ -6,7 +6,7 @@
 #
 
 # Pull base image.
-FROM oracle-java8
+FROM dockerfile/java:oracle-java8
 
 # Install maven
 RUN apt-get update
