@@ -1,0 +1,50 @@
+# Eclipse
+.classpath
+.project
+.metadata
+.settings/
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
+
+# Maven
+log/
+target/
+
+# Dumps
+/download/
+*.bz2
+*.gz
+*.csv
+
+# tmp
+*/tmp/
+.tmp/
+tmp/
+dat/
+db/
+lib/
+
+# lib
+*/lib/
+
+# misc
+wp-java.sh
+
+
+
+*.jar
+
+*.pdf
+
+wb-java.sh
+*.tsv
+
+customized.conf
+
+wb-java.sh.backup
