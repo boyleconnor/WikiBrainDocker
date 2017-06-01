@@ -34,6 +34,7 @@ FROM ubuntu
   WORKDIR /wikibrain
 
   ADD pom.xml /wikibrain/pom.xml
+  RUN sh
   RUN ["mvn", "dependency:resolve"]
   RUN ["mvn", "verify"]
 
