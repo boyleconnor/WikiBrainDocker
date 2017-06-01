@@ -34,12 +34,12 @@ FROM ubuntu
   WORKDIR /wikibrain
 
   ADD pom.xml /wikibrain/pom.xml
-  RUN sh
-  RUN ["mvn", "dependency:resolve"]
-  RUN ["mvn", "verify"]
-
-  # Define commonly used JAVA_HOME variable
-  ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-
-  # Define default command.
   CMD ["bash"]
+##RUN ["mvn", "dependency:resolve"]
+##RUN ["mvn", "verify"]
+
+### Define commonly used JAVA_HOME variable
+##ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+### Define default command.
+##CMD ["bash"]
