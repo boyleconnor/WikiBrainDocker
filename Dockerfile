@@ -38,19 +38,11 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Maven comes in to compile via the pom.xml file (hopefully)
 WORKDIR /home/wikibrain
-RUN ["mvn", "compile"]
-
-# Maven comes in to compile via the pom.xml file (hopefully)
-WORKDIR /home/wikibrain/wikibrain-core
-RUN ["mvn", "test"]
-RUN ["mvn", "compile"]
-
-#WORKDIR /home/wikibrain/wikibrain-core/jooqh2
-#RUN ["mvn", "generate-sources"]
-
 
 #Run Git Checkout Develop in order to get the develop branch instead of the main
-RUN git checkout develop && git merge master
+RUN git checkout develop
+
+RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
 # Define default command.
 CMD ["bash"]
