@@ -45,8 +45,10 @@ RUN git checkout develop
 # Maven Stuff
 RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
+# RUN ./wb-java.sh org.wikibrain.dao.loader.PipelineLoader -l simple
+
 # Install PostgreSQL
-RUN apt-get install -y postgresql postgresql-contrib
+# RUN apt-get install -y postgresql postgresql-contrib
 
 # Define default command.
 CMD bash
