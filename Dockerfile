@@ -31,13 +31,14 @@ FROM ubuntu
   WORKDIR /home
   RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
   RUN git clone https://github.com/shilad/CartoExtractor.git ./CartoExtractor
-  ADD pom.xml /wikibrain/pom.xml
-  CMD ["bash"]
-##RUN ["mvn", "dependency:resolve"]
-##RUN ["mvn", "verify"]
+
 
 # Define commonly used JAVA_HOME variable
   ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Define default command.
   CMD ["bash"]
+
+# Maven comes in to compile via the pom.xml file (hopefully)
+  WORKDIR /home/wikibrain
+  RUN ["mvn", "compile"]
