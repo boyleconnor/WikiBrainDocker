@@ -49,6 +49,7 @@ RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.
 WORKDIR /home/
 ADD apt.postgresql.org.sh script.sh
 RUN chmod 111 script.sh && yes | ./script.sh
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q --force-yes postgresql-9.5 pgadmin3
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5 pgadmin3
+RUN apt-get install -y postgresql-9.5-postgis-2.3
 # Define default command.
 CMD bash
