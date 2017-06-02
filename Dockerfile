@@ -39,10 +39,14 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # Maven comes in to compile via the pom.xml file (hopefully)
 WORKDIR /home/wikibrain
 
-#Run Git Checkout Develop in order to get the develop branch instead of the main
+# Checkout <develop> branch in Git
 RUN git checkout develop
 
+# Maven Stuff
 RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
+# Install PostgreSQL
+RUN apt-get install -y postgresql postgresql-contrib
+
 # Define default command.
-CMD ["bash"]
+CMD bash
