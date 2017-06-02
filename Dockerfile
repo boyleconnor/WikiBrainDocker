@@ -40,5 +40,13 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 WORKDIR /home/wikibrain
 RUN ["mvn", "compile"]
 
+# Maven comes in to compile via the pom.xml file (hopefully)
+WORKDIR /home/wikibrain/wikibrain-core
+RUN ["mvn", "test"]
+RUN ["mvn", "compile"]
+
+WORKDIR /home/wikibrain/wikibrain-core/jooqh2
+RUN ["mvn", "generate-sources"]
+
 # Define default command.
 CMD ["bash"]
