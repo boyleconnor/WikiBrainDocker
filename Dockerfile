@@ -45,8 +45,12 @@ WORKDIR /home/wikibrain/wikibrain-core
 RUN ["mvn", "test"]
 RUN ["mvn", "compile"]
 
-WORKDIR /home/wikibrain/wikibrain-core/jooqh2
-RUN ["mvn", "generate-sources"]
+#WORKDIR /home/wikibrain/wikibrain-core/jooqh2
+#RUN ["mvn", "generate-sources"]
+
+
+#Run Git Checkout Develop in order to get the develop branch instead of the main
+RUN git checkout develop && git merge master
 
 # Define default command.
 CMD ["bash"]
