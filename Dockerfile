@@ -56,9 +56,14 @@ RUN apt-get install -y postgresql-9.5-postgis-2.3
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
+
 # Add Custom WikiBrain Configuration File
 WORKDIR /home/wikibrain/
 ADD customized.conf customized.conf
+
+# Add script to create appropriate users and DBs in Postgres
+ADD postgres_setup.sh postgres_setup.sh
+RUN chmod 111 postgres_setup.sh
 
 # Define default command.
 CMD service postgresql start && bash
