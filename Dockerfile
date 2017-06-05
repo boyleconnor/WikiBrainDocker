@@ -56,7 +56,7 @@ RUN service postgresql start
 
 #Update prostgresql settings and config file with overwrite:
 RUN cp postgres.conf /etc/postgresql/9.5/main
-ls -l /etc/postgresql/9.5/main
+RUN ls -l /etc/postgresql/9.5/main
 
 # Define default command.
 CMD bash
