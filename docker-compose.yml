@@ -1,0 +1,7 @@
+version: '3.0'
+services:
+    app:
+        build: .
+        sysctls:
+            - kernel.shmmax = 64205988352
+            - kernel.shmall = 15675290
