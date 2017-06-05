@@ -51,6 +51,7 @@ ADD apt.postgresql.org.sh script.sh
 RUN chmod 111 script.sh && yes | ./script.sh
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5 pgadmin3
 RUN apt-get install -y postgresql-9.5-postgis-2.3
+RUN service postgresql start
 
 # Define default command.
 CMD bash
