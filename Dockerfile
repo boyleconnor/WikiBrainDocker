@@ -29,7 +29,6 @@ RUN apt-get install -y maven
 
 # Define working directory.
 WORKDIR /home
-ADD postgres.conf postgres.conf
 RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
 RUN git clone https://github.com/shilad/CartoExtractor.git ./CartoExtractor
 
@@ -52,11 +51,13 @@ ADD apt.postgresql.org.sh script.sh
 RUN chmod 111 script.sh && yes | ./script.sh
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5 pgadmin3
 RUN apt-get install -y postgresql-9.5-postgis-2.3
-RUN service postgresql start
 
 #Update prostgresql settings and config file with overwrite:
-RUN cp postgres.conf /etc/postgresql/9.5/main
-ls -l /etc/postgresql/9.5/main
+
+ADD postgres.conf postgres.conf
+RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
+
+RUN service postgresql start
 
 # Define default command.
 CMD bash
