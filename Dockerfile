@@ -53,11 +53,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5 pgadmin3
 RUN apt-get install -y postgresql-9.5-postgis-2.3
 
 #Update prostgresql settings and config file with overwrite:
+<<<<<<< HEAD
 
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
 RUN service postgresql start
+=======
 RUN cp postgres.conf /etc/postgresql/9.5/main
 RUN ls -l /etc/postgresql/9.5/main
 >>>>>>> 4c61cb7c369d7198afba6ebfc75957688617371a
