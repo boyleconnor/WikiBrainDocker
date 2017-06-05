@@ -52,9 +52,13 @@ RUN chmod 111 script.sh && yes | ./script.sh
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5 pgadmin3
 RUN apt-get install -y postgresql-9.5-postgis-2.3
 
-#Update prostgresql settings and config file with overwrite:
+# Update prostgresql settings and config file with overwrite:
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
+
+# Add Custom WikiBrain Configuration File
+WORKDIR /home/wikibrain/
+ADD customized.conf customized.conf
 
 # Define default command.
 CMD service postgresql start && bash
