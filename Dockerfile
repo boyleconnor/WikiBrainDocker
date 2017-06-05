@@ -55,7 +55,6 @@ RUN apt-get install -y postgresql-9.5-postgis-2.3
 #Update prostgresql settings and config file with overwrite:
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
-RUN service postgresql start
 
 # Define default command.
-CMD bash
+CMD service postgresql start && bash
