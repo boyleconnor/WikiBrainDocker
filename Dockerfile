@@ -66,9 +66,13 @@ ADD postgres_setup.sh postgres_setup.sh
 
 # Define default command.
 CMD service postgresql start && sh postgres_setup.sh && bash
-# RUN mvn install -DskipTests
-# RUN ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
-# WORKDIR /home/CartoExtractor/
-# RUN mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
-# RUN ls /output/
-# CMD bash
+#CMD service postgresql start && ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple && cd ../CartoExtractor && mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1" && bash
+
+#Old method for getting tsv files, just keep for reference
+#Running the cartoextraction AT buildtime. Not the best idea but.... C'est la vie
+#RUN mvn install -DskipTests
+#RUN ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
+#WORKDIR /home/CartoExtractor/
+#RUN mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
+#WORKDIR /home
+#RUN ls /output
