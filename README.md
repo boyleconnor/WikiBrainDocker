@@ -50,30 +50,31 @@ When a user runs the built image, it first does the following:
 
 # Runtime defaults 
 
-This runthrough automatically does the following:
-1. the kernel shmall value is set to 15675290 bytes.
-2. The kernel shmmax value is set to 64205988352 bytes.
-3. The versions for software installed are: 
+The "docker run" command in buildrun.sh automatically does the following:
+1. Set the kernel shmall value to 15.6 megabytes.
+2. Set the kernel shmmax value to 64.2 gigabytes.
+3. TODO: Why is this under "Runtime defaults"? The versions for software
+   installed are: 
   - Java 8
   - PostgreSQL version 9.5
   - PostGIS 2.3
   - Ubuntu is based on the most current docker image available at runtime
 4. Custom setting changes to postgreSQL can be found in the postgres.conf file.
-   These settings overwrite the default choices during postgreSQL installation. 
-5. The loader program memory allocation is set to 3.5GB at runtime. Doing less
-   than this may lead to errors at runtime. 
+   These settings overwrite the default choices.
+5. The loader program memory allocation is set to 3.5 gigabytes at runtime.
+   Allcoating less than this amount may lead to errors at runtime. 
 
 When running the loader and extractor files on your own, the following commands
 are done as default: 
 -     ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
 -     exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
 
-To use versions of wikipedia other than simple english, change the -l flag when
-running the wikibrain loader.  To change the output volume, change the -o flag
-when you run the cartograph Extractor. It's important to note that only the
-/output directory is a volume that's also mounted to a directory on the host
-computer. Changing this directory may lead to being unable to find your files
-on the host machine after running. 
+To use versions of wikipedia other than simple english, change the string after
+the -l flag when running the wikibrain loader.  To change the output volume,
+change the -o flag when you run the cartograph Extractor. It's important to
+note that only the /output directory is a volume that's also mounted to a
+directory on the host computer. Changing this directory may lead to being
+unable to find your files on the host machine after running. 
 
 By default, the /output directory is mapped to /Public/generatedFiles. This
 directory can be changed in the buildrun.sh script before running. 
