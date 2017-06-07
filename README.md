@@ -61,8 +61,8 @@ The "docker run" command in buildrun.sh automatically does the following:
   - Ubuntu is based on the most current docker image available at runtime
 4. Custom setting changes to postgreSQL can be found in the postgres.conf file.
    These settings overwrite the default choices.
-5. The loader program memory allocation is set to 3.5 gigabytes at runtime.
-   Allcoating less than this amount may lead to errors at runtime. 
+5. The JVM memory allocation is set to 3.5 gigabytes (at runtime).
+   Allocating less than this amount may lead to errors at runtime. 
 
 When running the loader and extractor files on your own, the following commands
 are done as default: 
