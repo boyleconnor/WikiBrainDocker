@@ -63,13 +63,12 @@ ADD customized.conf customized.conf
 
 # Add script to create appropriate users and DBs in Postgres
 ADD postgres_setup.sh postgres_setup.sh
-RUN chmod 111 postgres_setup.sh
 
 # Define default command.
-CMD service postgresql start
-RUN mvn install -DskipTests
-RUN ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
-WORKDIR /home/CartoExtractor/
-RUN mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
-RUN ls /output/
-CMD bash
+CMD service postgresql start && sh postgres_setup.sh && bash
+# RUN mvn install -DskipTests
+# RUN ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
+# WORKDIR /home/CartoExtractor/
+# RUN mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
+# RUN ls /output/
+# CMD bash
