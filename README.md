@@ -48,3 +48,5 @@ To attempt to use other versions of wikipedia beyond simple english, change the 
 To change the output volume, change the -o flag when you run the cartograph Extractor. It's important to note that only the /output directory is a volume that's also mounted to a directory on the host computer. Changing this directory may lead to being unable to find your files on the host machine after running. 
 
 By default, the /output directory is mapped to /Public/generatedFiles. This directory can be changed in the buildrun.sh script before running. 
+
+Additionally, the build currently defaults to using caches during the docker run command, if you wish to start the image fresh (in the event that you'd like to save output again for example in a different directory), you'll need to add the --no-cache tag to your docker build function in ./buildrun.sh. Do note that this will lead to the docker run function taking significantly longer on subsequent runs as it won't have cache to refer to to speed up the run time. 
