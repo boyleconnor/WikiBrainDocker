@@ -66,8 +66,7 @@ This runthrough automatically does the following:
 When running the loader and extractor files on your own, the following commands
 are done as default: 
 -     ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
--     exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o \
-      /output --base-dir ../wikibrain -r 1"
+-     exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
 
 To use versions of wikipedia other than simple english, change the -l flag when
 running the wikibrain loader.  To change the output volume, change the -o flag
