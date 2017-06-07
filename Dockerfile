@@ -65,7 +65,7 @@ ADD customized.conf customized.conf
 ADD postgres_setup.sh postgres_setup.sh
 
 # Define default command.
-CMD service postgresql start && sh postgres_setup.sh && bash
+CMD service postgresql start && sh postgres_setup.sh && ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG && bash
 #CMD service postgresql start && ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple && cd ../CartoExtractor && mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1" && bash
 
 #Old method for getting tsv files, just keep for reference
