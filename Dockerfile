@@ -58,6 +58,7 @@ RUN rm -rf /var/cache/oracle-jdk8-installer
 # Define Java_Home
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 # Install maven
+RUN apt-get update
 RUN apt-get install --assume-yes maven
 
 
