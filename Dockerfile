@@ -2,7 +2,7 @@
 # CartoExtractor & WikiBrain Container
 # 
 
-# Pull base image.
+# Pull Ubuntu base image.
 FROM ubuntu
 
 # Install Java. Source: TODO: track down and add source
@@ -39,7 +39,7 @@ WORKDIR /home/wikibrain
 # Checkout <develop> branch in Git
 RUN git checkout develop
 
-# Maven Stuff
+# Maven Stuff TODO: Ask Shilad to label this command
 RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
 # Install PostgreSQL
@@ -49,7 +49,7 @@ RUN chmod 111 script.sh && yes | ./script.sh
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5 pgadmin3
 RUN apt-get install -y postgresql-9.5-postgis-2.3
 
-# Update prostgresql settings and config file with overwrite:
+# Update prostgresql settings:
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
@@ -65,19 +65,16 @@ ADD postgres_setup.sh postgres_setup.sh
 # ADD download en/download
 
 CMD service postgresql start && \
+    # Add appropriate db & user to PostgreSQL
     sh postgres_setup.sh && \
     sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
-    ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
-    cd ../CartoExtractor && \
-    mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
-    bash
-#CMD service postgresql start && ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple && cd ../CartoExtractor && mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1" && bash
 
-#Old method for getting tsv files, just keep for reference
-#Running the cartoextraction AT buildtime. Not the best idea but.... C'est la vie
-#RUN mvn install -DskipTests
-#RUN ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
-#WORKDIR /home/CartoExtractor/
-#RUN mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
-#WORKDIR /home
-#RUN ls /output
+    # Run WikiBrain's Loader
+    ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
+
+    # Run CartoExtractor, outputting to /output (recommended to make this a volume shared with the host)
+    cd ../CartoExtractor && \
+    mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" \
+    -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
+    # Provide shell (if the user wants one)
+    bash
