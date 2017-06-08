@@ -1,37 +1,74 @@
 #
 # CartoExtractor & WikiBrain Container
 # 
+# When running an image built with this Dockerfile, it is required to define
+# the following environment variables:
+#
+# MEM:
+#     The number of megabytes, appended with 'm' to allocate to the JVM when
+#     running WikiBrain's loader, e.g. '8000m'. If this is set too low, the
+#     diagnostic stage of WikiBrain's loader will fail and produce a helpful
+#     error message containing the necessary amount of memory. NOTE: if you set
+#     MEM higher than the maximum amount of memory available to Docker (as
+#     defined in your Docker preferences), the loader will crash with an
+#     extremely vague and unhelpful error message (code 137).
+#
+# WIKILANG:
+#     The (usually two-letter) language code of the Wikipedia from which you'd
+#     like to load pages, e.g. 'en' or 'simple'.
+#
+# To get the eventual output files from CartoExtractor, you'll need to set up a
+# "volume" at run time to be shared with the host. This can be done with the
+# '-v HOST_DIR:/output' where HOST_DIR is a path on the host to a directory
+# (to be made if it doesn't exist) where the output files will be sent.
+#
+# The built image should also be run with the following options specifying
+# shared memory parameters, which are needed for WikiBrain:
+# 
+#     --sysctl kernel.shmmax=64205988352
+#     --sysctl kernel.shmall=15675290
+#
+# Running the image will automatically start by running WikiBrain loader and
+# CartoExtractor. If the '-it' option is given at runtime, it will then give
+# the user an interactive shell into the container.
+#
+# The following two lines are an example of how to build an image and run a
+# container from this Dockerfile:
+#
+# docker build -t CartoContainer .
+# docker run --sysctl kernel.shmmax=64205988352 --sysctl kernel.shmall=15675290 -e WIKILANG=$1 -e MEM=9g -v ./output:/output -it CartoContainer
+
 
 # Pull Ubuntu base image.
 FROM ubuntu
 
+
 # Install Java. Source: TODO: track down and add source
-RUN \
-  apt-get update && \
-  apt-get --assume-yes install git && \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  apt-get --assume-yes install software-properties-common && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
-
-# Define commonly used JAVA_HOME variable
+RUN apt-get update && \
+# Add Oracle Repository
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+RUN apt-get --assume-yes install software-properties-common && \
+RUN add-apt-repository -y ppa:webupd8team/java && \
+# TODO: check if below update is meaningful
+RUN apt-get update && \
+# Install Java 8 package from Oracle Repository
+RUN apt-get install --assume-yes oracle-java8-installer && \
+RUN rm -rf /var/lib/apt/lists/* && \
+RUN rm -rf /var/cache/oracle-jdk8-installer
+# Define Java_Home
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
-
 # Install maven
-RUN apt-get update
-RUN apt-get install -y maven
+RUN apt-get install --assume-yes maven
 
-# Define working directory.
+
+## Clone WikiBrain and CartoExtractor from Git
+# Install Git
+RUN apt-get --assume-yes install git
 WORKDIR /home
+# Clone WB and CE to appropriate paths
 RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
 RUN git clone https://github.com/shilad/CartoExtractor.git ./CartoExtractor
 
-
-# Define commonly used JAVA_HOME variable
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
 
 # Maven comes in to compile via the pom.xml file (hopefully)
 WORKDIR /home/wikibrain
@@ -65,6 +102,7 @@ ADD postgres_setup.sh postgres_setup.sh
 # ADD download en/download
 
 CMD service postgresql start && \
+
     # Add appropriate db & user to PostgreSQL
     sh postgres_setup.sh && \
     sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
@@ -76,5 +114,6 @@ CMD service postgresql start && \
     cd ../CartoExtractor && \
     mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" \
     -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
-    # Provide shell (if the user wants one)
+
+    # Provide shell (in case user wants one, must be run with "-it" option)
     bash
