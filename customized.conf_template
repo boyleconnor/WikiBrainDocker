@@ -1,0 +1,17 @@
+baseDir : ".\/<WIKILANG>"
+
+dao.dataSource.default : psql
+
+dao.dataSource.h2.url : "jdbc:h2:"${baseDir}"\/db\/h2;LOG=0;CACHE_SIZE=65536;LOCK_MODE=0;UNDO_LOG=0;MAX_OPERATION_MEMORY=100000000"
+
+dao.dataSource.psql.url : "jdbc:postgresql:\/\/localhost\/wikibrain_<WIKILANG>"
+dao.dataSource.psql.username : "wikibrain"
+dao.dataSource.psql.password : "wikibrain"
+
+spatial.dao.dataSource.postgis.host : "localhost"
+spatial.dao.dataSource.postgis.port : "5432"
+spatial.dao.dataSource.postgis.database : "wikibrain_<WIKILANG>"
+spatial.dao.dataSource.postgis.user : "wikibrain"
+spatial.dao.dataSource.postgis.passwd : "wikibrain"
+
+

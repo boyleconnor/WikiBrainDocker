@@ -1,14 +1,11 @@
 #
-# Oracle Java 8 Dockerfile
-#
-# https://github.com/dockerfile/java
-# https://github.com/dockerfile/java/tree/master/oracle-java8
-#
+# CartoExtractor & WikiBrain Container
+# 
 
 # Pull base image.
 FROM ubuntu
 
-# Install Java.
+# Install Java. Source: TODO: track down and add source
 RUN \
   apt-get update && \
   apt-get --assume-yes install git && \
@@ -59,13 +56,21 @@ RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
 # Add Custom WikiBrain Configuration File
 WORKDIR /home/wikibrain/
-ADD customized.conf customized.conf
+ADD customized.conf_template customized.conf_template
 
 # Add script to create appropriate users and DBs in Postgres
 ADD postgres_setup.sh postgres_setup.sh
 
-# Define default command.
-CMD service postgresql start && sh postgres_setup.sh && ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG && bash
+# Add pre-downloaded English Wikipedia
+# ADD download en/download
+
+CMD service postgresql start && \
+    sh postgres_setup.sh && \
+    sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
+    ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
+    cd ../CartoExtractor && \
+    mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
+    bash
 #CMD service postgresql start && ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple && cd ../CartoExtractor && mvn compile exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1" && bash
 
 #Old method for getting tsv files, just keep for reference
