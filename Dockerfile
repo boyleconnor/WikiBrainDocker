@@ -44,16 +44,16 @@ FROM ubuntu
 
 
 # Install Java. Source: TODO: track down and add source
-RUN apt-get update && \
+RUN apt-get update
 # Add Oracle Repository
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-RUN apt-get --assume-yes install software-properties-common && \
-RUN add-apt-repository -y ppa:webupd8team/java && \
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN apt-get --assume-yes install software-properties-common
+RUN add-apt-repository -y ppa:webupd8team/java
 # TODO: check if below update is meaningful
-RUN apt-get update && \
+RUN apt-get update
 # Install Java 8 package from Oracle Repository
-RUN apt-get install --assume-yes oracle-java8-installer && \
-RUN rm -rf /var/lib/apt/lists/* && \
+RUN apt-get install --assume-yes oracle-java8-installer
+RUN rm -rf /var/lib/apt/lists/*
 RUN rm -rf /var/cache/oracle-jdk8-installer
 # Define Java_Home
 ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
