@@ -1,22 +1,17 @@
 # WikiBrainDocker
 # Overview
-The WikiBrainDocker is a docker image based on the wikibrain project and the
-CartoExtractor project that utilizes wikibrains. Based on a Ubuntu image, the
-WikiBrainDocker automatically downloads and installs all of the prerequisites
-for using WikiBrains and CartoExtractor. In order to run the docker image, one
-must have docker installed and configured. Configuration requires at least 4 GB
-of RAM. 
+WikiBrainDocker is a docker image that automatically installs and runs
+CartoExtractor and WikiBrain. It is based on the default Ubuntu Docker image,
+and automatically downloads and installs all prerequisites for using WikiBrain
+and CartoExtractor. In order to run docker image, docker must be installed.
 
-# Setup
-Download and install docker through your web browser of choice. Go to Docker
-Preferences, and change the memory allocation for an image to 4 Gb from its
-default value. 
+# Installation
+Download and install Docker. Go to Docker preferences, and under the "Advanced"
+tab, change the memory allocation to at least 10.0 GB.
 
-Download the WikiBrainDocker zip file, and unzip it to a local folder of
-choice. Make sure that you can easily access this folder path. 
-
-Open a bash or terminal, and change your directory so that you are in the
-wikibraindocker folder.
+Download the WikiBrainDocker as a zip file and unzip it. Alternatively, you can
+clone it with Git. Open a terminal window, and change your working directory to
+the uncompressed WikiBrainDocker folder.
 
 # Running
 
@@ -30,6 +25,7 @@ kernel.shmall=15675290 -v HOMEPATHFOROUTPUTFILES:/output --name outputFiles -it
 IMAGENAME" to then begin to run the shell.
 
 The dockerfile does the following when it builds the image:
+
 1. Install Maven
 2. Install Java 8
 3. Check out and configure the wikibrain and cartoextractor repositories
