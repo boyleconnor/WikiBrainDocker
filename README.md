@@ -1,20 +1,44 @@
 # WikiBrainDocker
+
 # Overview
-WikiBrainDocker is a docker image that automatically installs and runs
-CartoExtractor and WikiBrain. It is based on the default Ubuntu Docker image,
-and automatically downloads and installs all prerequisites for using WikiBrain
-and CartoExtractor. In order to run docker image, docker must be installed.
+
+WikiBrainDocker is a dockerfile for the purpose of extracting
+Cartograph-compatible data files from a Wikipedia of a given language. It is
+based on the default Ubuntu Docker image, and automatically downloads and
+installs all prerequisites for using WikiBrain and CartoExtractor. It
+automatically installs and runs CartoExtractor and WikiBrain.  It then runs
+WikiBrain's loader on a Wikipedia of any language (specified by user), and runs
+the CartoExtractor pipeline. In order to run docker image, docker must be
+installed.
 
 # Installation
-Download and install Docker. Go to Docker preferences, and under the "Advanced"
-tab, change the memory allocation to at least 10.0 GB.
 
-Download the WikiBrainDocker as a zip file and unzip it. Alternatively, you can
+First, download and install Docker if it is not already installed. Then, go to
+Docker preferences, and under the "Advanced" tab, change the memory allocation
+to at least 10.0 GB.
+
+Download WikiBrainDocker as a zip file and unzip it. Alternatively, you can
 clone it with Git. Open a terminal window, and change your working directory to
 the uncompressed WikiBrainDocker folder.
 
 # Running
 
+If you are on a unix system and are looking for ease of use, simply run the
+following command:
+
+    ./run.sh <WIKILANG>
+
+where <WIKILANG> is the (usually two-letter) language code of the Wikipedia
+you'd like to download from, e.g. "en" for English or "zh" for Chinese (without
+the quotes). Example:
+
+    ./run.sh en
+
+Will download and extract Cartograph the whole English Wikipedia, then output
+Cartograph-compatible data (in the form of .tsv files) to ./output (where . is
+the current working directory).
+
+which will automatically
 Type in ./buildrun.sh in order to automatically build the docker image and run
 it. upon completion the bash for the docker container will be available. 
 
