@@ -71,12 +71,9 @@ RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
 RUN git clone https://github.com/shilad/CartoExtractor.git ./CartoExtractor
 
 
-# Maven comes in to compile via the pom.xml file (hopefully)
 WORKDIR /home/wikibrain
-
 # Checkout <develop> branch in Git
 RUN git checkout develop
-
 # Maven Stuff TODO: Ask Shilad to label this command
 RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
@@ -87,7 +84,7 @@ RUN chmod 111 script.sh && yes | ./script.sh
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5
 RUN apt-get install -y postgresql-9.5-postgis-2.3
 
-# Update prostgresql settings:
+# Update Postgresql settings:
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
@@ -99,19 +96,20 @@ ADD customized.conf_template customized.conf_template
 # Add script to create appropriate users and DBs in Postgres
 ADD postgres_setup.sh postgres_setup.sh
 
-# Add pre-downloaded English Wikipedia
-# ADD download en/download
 
-CMD service postgresql start && \
-
-    # Add appropriate db & user to PostgreSQL
+CMD \
+    ## Start up and configure for PostgreSQL
+    # Start psql daemon
+    service postgresql start && \
+    # Add appropriate db & user to psql
     sh postgres_setup.sh && \
+    # Generate (wiki) language-appropriate psql conf file for WikiBrain
     sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
 
-    # Run WikiBrain's Loader
+    # Run WikiBrain's loader
     ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
 
-    # Run CartoExtractor, outputting to /output (recommended to make this a volume shared with the host)
+    # Run CartoExtractor, outputting to /output (recommended to share this with host using '-v')
     cd ../CartoExtractor && \
     mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" \
     -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
