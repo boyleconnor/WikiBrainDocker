@@ -67,8 +67,8 @@ RUN apt-get install --assume-yes maven
 RUN apt-get --assume-yes install git
 WORKDIR /home
 # Clone WB and CE to appropriate paths
-RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
-RUN git clone https://github.com/shilad/CartoExtractor.git ./CartoExtractor
+ADD /wikibrain ./wikibrain
+ADD /CartoExtractor ./CartoExtractor
 
 
 # Maven comes in to compile via the pom.xml file (hopefully)
@@ -76,9 +76,6 @@ WORKDIR /home/wikibrain
 
 # Checkout <develop> branch in Git
 RUN git checkout develop
-
-# Maven Stuff TODO: Ask Shilad to label this command
-RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
 # Install PostgreSQL
 WORKDIR /home/
@@ -107,14 +104,6 @@ CMD service postgresql start && \
     # Add appropriate db & user to PostgreSQL
     sh postgres_setup.sh && \
     sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
-
-    # Run WikiBrain's Loader
-    ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
-
-    # Run CartoExtractor, outputting to /output (recommended to make this a volume shared with the host)
-    cd ../CartoExtractor && \
-    mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" \
-    -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
 
     # Provide shell (in case user wants one, must be run with "-it" option)
     bash
