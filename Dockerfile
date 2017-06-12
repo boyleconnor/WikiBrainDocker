@@ -96,8 +96,17 @@ ADD customized.conf_template customized.conf_template
 # Add script to create appropriate users and DBs in Postgres
 ADD postgres_setup.sh postgres_setup.sh
 
+# Add pre-downloaded English Wikipedia
+# ADD download en/download
+
 
 CMD \
+    ## Move to host-linked dir
+    cd .. && \
+    cp -r wikibrain /host/wikibrain && \
+    cp -r CartoExtractor /host/CartoExtractor && \
+    cd /host/wikibrain && \
+
     ## Start up and configure for PostgreSQL
     # Start psql daemon
     service postgresql start && \
