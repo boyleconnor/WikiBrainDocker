@@ -8,8 +8,8 @@ based on the default Ubuntu Docker image, and automatically downloads and
 installs all prerequisites for using WikiBrain and CartoExtractor. It
 automatically installs and runs CartoExtractor and WikiBrain.  It then runs
 WikiBrain's loader on a Wikipedia of any language (specified by user), and runs
-the CartoExtractor pipeline. In order to run docker image, docker must be
-installed.
+the CartoExtractor pipeline. In order to run this or any other docker image,
+docker must be installed.
 
 # Installation
 
@@ -17,9 +17,9 @@ First, download and install Docker if it is not already installed. Then, go to
 Docker preferences, and under the "Advanced" tab, change the memory allocation
 to at least 10.0 GB.
 
-Download WikiBrainDocker as a zip file and unzip it. Alternatively, you can
-clone it with Git. Open a terminal window, and change your working directory to
-the uncompressed WikiBrainDocker folder.
+Download WikiBrainDocker as a zip file from its GitHub page and unzip it.
+Alternatively, you can clone it with Git. Open a terminal window, and change
+your working directory to the uncompressed WikiBrainDocker folder.
 
 # Running
 
@@ -39,10 +39,11 @@ Cartograph-compatible data (in the form of .tsv files) to ./output (where . is
 the current working directory).
 
 Alternatively, one can use "docker build -t IMAGENAME ." where IMAGENAME is the
-name you want to give your image (e.g. "WikibrainImage") as a way of building
-the docker image and "docker run --sysctl kernel.shmmax=64205988352 --sysctl
-kernel.shmall=15675290 -v HOMEPATHFOROUTPUTFILES:/output --name outputFiles -it
-IMAGENAME" to then begin to run the shell.
+name you want to give your image (e.g. "WikiBrain") as a way of building
+the docker image. Once the image has been successfully built, run it by typing
+"docker run --sysctl kernel.shmmax=64205988352 --sysctl kernel.shmall=15675290
+-v HOMEPATHFOROUTPUTFILES:/output --name outputFiles -it IMAGENAME" to then
+begin to run the shell.
 
 The dockerfile does the following when it builds the image:
 
