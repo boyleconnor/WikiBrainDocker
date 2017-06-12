@@ -28,7 +28,7 @@ following command:
 
     ./run.sh <WIKILANG>
 
-where <WIKILANG> is the (usually two-letter) language code of the Wikipedia
+where \<WIKILANG\> is the (usually two-letter) language code of the Wikipedia
 you'd like to download from, e.g. "en" for English or "zh" for Chinese (without
 the quotes). Example:
 
