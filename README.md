@@ -30,11 +30,11 @@ following command:
 
 where \<WIKILANG\> is the (usually two-letter) language code of the Wikipedia
 you'd like to download from, e.g. "en" for English or "zh" for Chinese (without
-the quotes). Example:
+the quotes). For example:
 
     ./run.sh en
 
-Will download and extract Cartograph the whole English Wikipedia, then output
+will download and extract Cartograph the whole English Wikipedia, then output
 Cartograph-compatible data (in the form of .tsv files) to ./output (where . is
 the current working directory).
 
