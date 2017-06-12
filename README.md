@@ -34,13 +34,9 @@ the quotes). For example:
 
     ./run.sh en
 
-will download and extract Cartograph the whole English Wikipedia, then output
+will download and extract the whole English Wikipedia, then output
 Cartograph-compatible data (in the form of .tsv files) to ./output (where . is
 the current working directory).
-
-which will automatically
-Type in ./buildrun.sh in order to automatically build the docker image and run
-it. upon completion the bash for the docker container will be available. 
 
 Alternatively, one can use "docker build -t IMAGENAME ." where IMAGENAME is the
 name you want to give your image (e.g. "WikibrainImage") as a way of building
