@@ -60,7 +60,7 @@ When a user runs the built image, it first does the following:
    english Wikipedia database
 7. Use that data in order to generate tsv files for use in visualization using
    the CartoExtractor extractor functionality.
-8. Save the generated files in a volume (TODO: /path/to/volume/) accessible to
+8. Save the generated files in a volume accessible to
    other containers and the local host
 9. Run a bash terminal for user input in the event that they'd like to modify
    the parameters.
@@ -70,22 +70,24 @@ When a user runs the built image, it first does the following:
 The "docker run" command in buildrun.sh automatically does the following:
 1. Set the kernel shmall value to 15.6 megabytes.
 2. Set the kernel shmmax value to 64.2 gigabytes.
-3. TODO: Why is this under "Runtime defaults"? The versions for software
-   installed are: 
-  - Java 8
-  - PostgreSQL version 9.5
-  - PostGIS 2.3
-  - Ubuntu is based on the most current docker image available at runtime
-4. Custom setting changes to postgreSQL can be found in the postgres.conf file.
+3. Custom setting changes to postgreSQL can be found in the postgres.conf file.
    These settings overwrite the default choices.
-5. The JVM memory allocation is set to 3.5 gigabytes (at runtime).
+4. The JVM memory allocation is set to 9 gigabytes (at runtime).
    Allocating less than this amount may lead to errors at runtime. 
 
 When running the loader and extractor files on your own, the following commands
 are done as default: 
--     ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l simple
+-     ./wb-java.sh -Xmx3500m org.wikibrain.Loader -l LANGUAGE
 -     exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain -r 1"
 
+# Software Versions
+The versions for software installed are: 
+  - Java 8
+  - PostgreSQL version 9.5
+  - PostGIS 2.3
+  - Ubuntu is based on the most current docker image available at runtime
+ 
+# Changing output
 To use versions of wikipedia other than simple english, change the string after
 the -l flag when running the wikibrain loader.  To change the output volume,
 change the -o flag when you run the cartograph Extractor. It's important to
@@ -93,5 +95,6 @@ note that only the /output directory is a volume that's also mounted to a
 directory on the host computer. Changing this directory may lead to being
 unable to find your files on the host machine after running. 
 
-By default, the /output directory is mapped to /Public/generatedFiles. This
-directory can be changed in the buildrun.sh script before running. 
+By default, the /output directory is mapped to /output. This
+directory can be changed in the ./run.sh script before running. 
+If you wish to use your own modified wikibrain or cartoextractor library, the devMode branch includes a separate dockerfile and run.sh script which will install all the necessary software but instead of cloning wikibrains and cartoextractor from the git master, this branch instead relies upon the user providing their own wikibrains and cartoextractor. DevMode also doesn't run the loader and extractor, providing a direct access to bash on runtime. 
