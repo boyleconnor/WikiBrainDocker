@@ -108,6 +108,12 @@ CMD \
     cd /host/wikibrain && \
 
     ## Start up and configure for PostgreSQL
+    # Copy PostgreSQL data to host directory
+    mv /var/lib/postgresql /host && \
+    # Edit PostgreSQL conf to reflect moved data
+    sed "s/\/var\/lib\/postgresql/\/host\/postgresql/" /etc/postgresql/9.5/main/postgresql.conf > /etc/postgresql/9.5/main/postgresql.conf_tmp && \
+    mv /etc/postgresql/9.5/main/postgresql.conf_tmp /etc/postgresql/9.5/main/postgresql.conf && \
+
     # Start psql daemon
     service postgresql start && \
     # Add appropriate db & user to psql
