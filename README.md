@@ -88,13 +88,19 @@ The versions for software installed are:
   - Ubuntu is based on the most current docker image available at runtime
  
 # Changing output
-To use versions of wikipedia other than simple english, change the string after
-the -l flag when running the wikibrain loader.  To change the output volume,
-change the -o flag when you run the cartograph Extractor. It's important to
-note that only the /output directory is a volume that's also mounted to a
-directory on the host computer. Changing this directory may lead to being
-unable to find your files on the host machine after running. 
+By default, the /output directory is mapped to ./output. This directory can be
+changed in the ./run.sh script before running.  If you wish to use your own
+modified WikiBrain or CartoExtractor library, the devMode branch includes a
+separate dockerfile and run.sh script which will install all the necessary
+software but instead of cloning wikibrains and cartoextractor from the git
+master, this branch instead relies upon the user providing their own copy of
+WikiBrain and CartoExtractor. DevMode also doesn't run the loader and
+extractor, and instead provides a direct access to bash on runtime. 
 
-By default, the /output directory is mapped to /output. This
-directory can be changed in the ./run.sh script before running. 
-If you wish to use your own modified wikibrain or cartoextractor library, the devMode branch includes a separate dockerfile and run.sh script which will install all the necessary software but instead of cloning wikibrains and cartoextractor from the git master, this branch instead relies upon the user providing their own wikibrains and cartoextractor. DevMode also doesn't run the loader and extractor, providing a direct access to bash on runtime. 
+To use editions of Wikipedia other than Simple English, change the string after
+the -l flag when running the WikiBrain loader (the line that starts with
+'./wb-java.sh...').  To change the output directory in the container, change
+the -o flag when you run the cartograph Extractor. Note that in run.sh, the
+/output directory is a volume that's also mounted to a directory on the host
+computer. Changing this directory may lead to being unable to find your files
+on the host machine after running. 
