@@ -1,0 +1,95 @@
+#
+# CartoExtractor & WikiBrain Container
+#
+# When running an image built with this Dockerfile, it is required to define
+# the following environment variables:
+#
+# MEM:
+#     The number of megabytes, appended with 'm' to allocate to the JVM when
+#     running WikiBrain's loader, e.g. '8000m'. If this is set too low, the
+#     diagnostic stage of WikiBrain's loader will fail and produce a helpful
+#     error message containing the necessary amount of memory. NOTE: if you set
+#     MEM higher than the maximum amount of memory available to Docker (as
+#     defined in your Docker preferences), the loader will crash with an
+#     extremely vague and unhelpful error message (code 137).
+#
+# WIKILANG:
+#     The (usually two-letter) language code of the Wikipedia from which you'd
+#     like to load pages, e.g. 'en' or 'simple'.
+#
+# To get the eventual output files from CartoExtractor, you'll need to set up a
+# "volume" at run time to be shared with the host. This can be done with the
+# '-v HOST_DIR:/output' where HOST_DIR is a path on the host to a directory
+# (to be made if it doesn't exist) where the output files will be sent.
+#
+# The built image should also be run with the following options specifying
+# shared memory parameters, which are needed for WikiBrain:
+#
+#     --sysctl kernel.shmmax=64205988352
+#     --sysctl kernel.shmall=15675290
+#
+# If the '-it' option is given at runtime, running the image will then give
+# the user an interactive shell into the container.
+#
+# The following two lines are an example of how to build an image and run a
+# container from this Dockerfile:
+#
+# docker build -t CartoContainer .
+# docker run --sysctl kernel.shmmax=64205988352 --sysctl kernel.shmall=15675290 -e WIKILANG=$1 -e MEM=9g -v ./output:/output -it CartoContainer
+
+
+# Pull Ubuntu base image.
+FROM ubuntu
+
+
+# Install Java. Source: TODO: track down and add source
+RUN apt-get update
+# Add Oracle Repository
+RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections
+RUN apt-get --assume-yes install software-properties-common
+RUN add-apt-repository -y ppa:webupd8team/java
+# TODO: check if below update is meaningful
+RUN apt-get update
+# Install Java 8 package from Oracle Repository
+RUN apt-get install --assume-yes oracle-java8-installer
+RUN rm -rf /var/lib/apt/lists/*
+RUN rm -rf /var/cache/oracle-jdk8-installer
+# Define Java_Home
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+# Install maven
+RUN apt-get update
+RUN apt-get install --assume-yes maven
+
+
+## Clone WikiBrain and CartoExtractor from Git
+# Install Git
+RUN apt-get --assume-yes install git
+WORKDIR /home
+# Clone WB and CE to appropriate paths
+ADD /wikibrain ./wikibrain
+ADD /CartoExtractor ./CartoExtractor
+
+
+# Install PostgreSQL
+WORKDIR /home/
+ADD apt.postgresql.org.sh script.sh
+RUN chmod 111 script.sh && yes | ./script.sh
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y -q postgresql-9.5
+RUN apt-get install -y postgresql-9.5-postgis-2.3
+
+# Update prostgresql settings:
+ADD postgres.conf postgres.conf
+RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
+
+
+
+# Add script to create appropriate users and DBs in Postgres
+ADD postgres_setup.sh postgres_setup.sh
+
+
+CMD service postgresql start && \
+
+    # Add appropriate db & user to PostgreSQL
+    sh postgres_setup.sh && \
+    # Provide shell (in case user wants one, must be run with "-it" option)
+    bash
