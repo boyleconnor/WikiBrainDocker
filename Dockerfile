@@ -1,6 +1,6 @@
 #
 # CartoExtractor & WikiBrain Container
-# 
+#
 # When running an image built with this Dockerfile, it is required to define
 # the following environment variables:
 #
@@ -24,7 +24,7 @@
 #
 # The built image should also be run with the following options specifying
 # shared memory parameters, which are needed for WikiBrain:
-# 
+#
 #     --sysctl kernel.shmmax=64205988352
 #     --sysctl kernel.shmall=15675290
 #
@@ -71,12 +71,6 @@ ADD /wikibrain ./wikibrain
 ADD /CartoExtractor ./CartoExtractor
 
 
-# Maven comes in to compile via the pom.xml file (hopefully)
-WORKDIR /home/wikibrain
-
-# Checkout <develop> branch in Git
-RUN git checkout develop
-
 # Install PostgreSQL
 WORKDIR /home/
 ADD apt.postgresql.org.sh script.sh
@@ -89,21 +83,14 @@ ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
 
-# Add Custom WikiBrain Configuration File
-WORKDIR /home/wikibrain/
-ADD customized.conf_template customized.conf_template
 
 # Add script to create appropriate users and DBs in Postgres
 ADD postgres_setup.sh postgres_setup.sh
 
-# Add pre-downloaded English Wikipedia
-# ADD download en/download
 
 CMD service postgresql start && \
 
     # Add appropriate db & user to PostgreSQL
     sh postgres_setup.sh && \
-    sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
-
     # Provide shell (in case user wants one, must be run with "-it" option)
     bash
