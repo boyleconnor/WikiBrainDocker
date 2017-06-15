@@ -1,6 +1,6 @@
 #
 # CartoExtractor & WikiBrain Container
-# 
+#
 # When running an image built with this Dockerfile, it is required to define
 # the following environment variables:
 #
@@ -24,7 +24,7 @@
 #
 # The built image should also be run with the following options specifying
 # shared memory parameters, which are needed for WikiBrain:
-# 
+#
 #     --sysctl kernel.shmmax=64205988352
 #     --sysctl kernel.shmall=15675290
 #

@@ -66,7 +66,7 @@ RUN apt-get install --assume-yes maven
 # Install Git
 RUN apt-get --assume-yes install git
 WORKDIR /home
-# Clone WB and CE to appropriate paths
+# Clone WB to appropriate path
 RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
 
 
@@ -97,20 +97,17 @@ ADD postgres_setup.sh postgres_setup.sh
 # Add pre-downloaded English Wikipedia
 # ADD download en/download
 
+# Update prostgresql settings:
+ADD postgres.conf postgres.conf
+RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
+
+
+# Add script to create appropriate users and DBs in Postgres
+ADD postgres_setup.sh postgres_setup.sh
+WORKDIR /home/wikibrain
 CMD \
-    ## Move to host-linked dir
-    cd .. && \
-    cp -r wikibrain /host/wikibrain && \
-    cd /host/wikibrain && \
-
-    ## Start up and configure for PostgreSQL
-    # Copy PostgreSQL data to host directory
-    mv /var/lib/postgresql /host && \
-    # Edit PostgreSQL conf to reflect moved data
-    sed "s/\/var\/lib\/postgresql/\/host\/postgresql/" /etc/postgresql/9.5/main/postgresql.conf > /etc/postgresql/9.5/main/postgresql.conf_tmp && \
-    mv /etc/postgresql/9.5/main/postgresql.conf_tmp /etc/postgresql/9.5/main/postgresql.conf && \
-
+## Start up and configure for PostgreSQL
     # Start psql daemon
     service postgresql start && \
     # Add appropriate db & user to psql
@@ -120,6 +117,4 @@ CMD \
 
     # Run WikiBrain's loader
     ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
-
-    # Provide shell (in case user wants one, must be run with "-it" option)
     bash
