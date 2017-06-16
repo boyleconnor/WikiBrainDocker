@@ -88,6 +88,9 @@ RUN apt-get install -y postgresql-9.5-postgis-2.3
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
+# Add Pre-Loaded WikiBrain
+# ADD wikibrain wikibrain
+# ADD postgresql postgresql
 
 # Add Custom WikiBrain Configuration File
 WORKDIR /home/wikibrain/
@@ -122,12 +125,10 @@ CMD \
     sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
 
     # Run WikiBrain's loader
-    ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
+    # ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
 
     # Run CartoExtractor, outputting to /output (recommended to share this with host using '-v')
-    cd ../CartoExtractor && \
-    mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" \
-    -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf" && \
-
+    # cd ../CartoExtractor && \
+    # MAVEN_OPTS="-Xmx9000m" mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf"
     # Provide shell (in case user wants one, must be run with "-it" option)
     bash
