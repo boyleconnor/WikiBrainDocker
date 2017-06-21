@@ -129,6 +129,6 @@ CMD \
 
     # Run CartoExtractor, outputting to /output (recommended to share this with host using '-v')
     # cd ../CartoExtractor && \
-    # MAVEN_OPTS="-Xmx9000m" mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain/simple -r 1 -c ../wikibrain/customized.conf"
+    # MAVEN_OPTS="-Xmx9000m" mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain/$WIKILANG -r 1 -c ../wikibrain/customized.conf"
     # Provide shell (in case user wants one, must be run with "-it" option)
     bash
