@@ -1,6 +1,6 @@
 #
-# CartoExtractor & WikiBrain Container
-# 
+# WikiBrain Container
+#
 # When running an image built with this Dockerfile, it is required to define
 # the following environment variables:
 #
@@ -24,7 +24,7 @@
 #
 # The built image should also be run with the following options specifying
 # shared memory parameters, which are needed for WikiBrain:
-# 
+#
 #     --sysctl kernel.shmmax=64205988352
 #     --sysctl kernel.shmall=15675290
 #
@@ -66,15 +66,13 @@ RUN apt-get install --assume-yes maven
 # Install Git
 RUN apt-get --assume-yes install git
 WORKDIR /home
-# Clone WB and CE to appropriate paths
+# Clone WB to appropriate path
 RUN git clone https://github.com/shilad/wikibrain.git ./wikibrain
-RUN git clone https://github.com/shilad/CartoExtractor.git ./CartoExtractor
 
 
 WORKDIR /home/wikibrain
 # Checkout <develop> branch in Git
 RUN git checkout develop
-# Maven Stuff TODO: Ask Shilad to label this command
 RUN mvn -f wikibrain-utils/pom.xml clean compile exec:java -Dexec.mainClass=org.wikibrain.utils.ResourceInstaller
 
 # Install PostgreSQL
@@ -88,9 +86,6 @@ RUN apt-get install -y postgresql-9.5-postgis-2.3
 ADD postgres.conf postgres.conf
 RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
-# Add Pre-Loaded WikiBrain
-# ADD wikibrain wikibrain
-# ADD postgresql postgresql
 
 # Add Custom WikiBrain Configuration File
 WORKDIR /home/wikibrain/
@@ -102,21 +97,17 @@ ADD postgres_setup.sh postgres_setup.sh
 # Add pre-downloaded English Wikipedia
 # ADD download en/download
 
+# Update prostgresql settings:
+ADD postgres.conf postgres.conf
+RUN cp postgres.conf /etc/postgresql/9.5/main/postgres.conf
 
+
+
+# Add script to create appropriate users and DBs in Postgres
+ADD postgres_setup.sh postgres_setup.sh
+WORKDIR /home/wikibrain
 CMD \
-    ## Move to host-linked dir
-    cd .. && \
-    cp -r wikibrain /host/wikibrain && \
-    cp -r CartoExtractor /host/CartoExtractor && \
-    cd /host/wikibrain && \
-
-    ## Start up and configure for PostgreSQL
-    # Copy PostgreSQL data to host directory
-    mv /var/lib/postgresql /host && \
-    # Edit PostgreSQL conf to reflect moved data
-    sed "s/\/var\/lib\/postgresql/\/host\/postgresql/" /etc/postgresql/9.5/main/postgresql.conf > /etc/postgresql/9.5/main/postgresql.conf_tmp && \
-    mv /etc/postgresql/9.5/main/postgresql.conf_tmp /etc/postgresql/9.5/main/postgresql.conf && \
-
+## Start up and configure for PostgreSQL
     # Start psql daemon
     service postgresql start && \
     # Add appropriate db & user to psql
@@ -125,10 +116,5 @@ CMD \
     sed "s/<WIKILANG>/$WIKILANG/" customized.conf_template > customized.conf && \
 
     # Run WikiBrain's loader
-    # ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
-
-    # Run CartoExtractor, outputting to /output (recommended to share this with host using '-v')
-    # cd ../CartoExtractor && \
-    # MAVEN_OPTS="-Xmx9000m" mvn compile -e exec:java -Dexec.mainClass="info.cartograph.Extractor" -Dexec.args="-o /output --base-dir ../wikibrain/$WIKILANG -r 1 -c ../wikibrain/customized.conf"
-    # Provide shell (in case user wants one, must be run with "-it" option)
+    ./wb-java.sh -Xmx$MEM org.wikibrain.Loader -l $WIKILANG -c customized.conf && \
     bash
